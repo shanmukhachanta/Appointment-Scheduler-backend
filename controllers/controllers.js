@@ -58,6 +58,15 @@ const updateAppointment = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'No such workout' });
     }
+
+    const { date, ...updateData } = req.body;
+
+    if (date) {
+      const isValidDate = /^(?:\d{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])$/.test(date);
+      if (!isValidDate) {
+          return res.status(400).json({ error: 'Invalid date format. Date should be in YYYY-MM-DD format.' });
+      }
+    }
   
     const updatedAppointment = await Appointment.findOneAndUpdate(
       { _id: id },
